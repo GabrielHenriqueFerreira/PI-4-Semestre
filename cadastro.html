@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cadastro | Paraflow</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+    <section class="painel-login">
+      <h1 class="logo" aria-label="Paraflow">
+        <span class="para">PARA</span><span class="flow">FLOW</span>
+      </h1>
+
+      <form class="form form-cadastro" id="form-cadastro" novalidate>
+        <h2>Crie sua conta</h2>
+
+        <div class="campo">
+          <label for="nome">Nome completo</label>
+          <input id="nome" type="text" autocomplete="name" required />
+        </div>
+
+        <div class="campo">
+          <label for="email">E-mail</label>
+          <input id="email" type="email" autocomplete="email" required />
+        </div>
+
+        <div class="campo">
+          <label for="usuario">Usuário</label>
+          <input id="usuario" type="text" autocomplete="username" required />
+        </div>
+
+        <div class="campo">
+          <label for="senha">Senha</label>
+          <div class="senha-wrap">
+            <input id="senha" type="password" autocomplete="new-password" minlength="6" required />
+            <button type="button" class="toggle" aria-pressed="false">Mostrar</button>
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="confirmar">Confirmar senha</label>
+          <input id="confirmar" type="password" autocomplete="new-password" required />
+        </div>
+
+        <p class="erro" id="erro" role="alert" hidden></p>
+        <p class="sucesso" id="sucesso" role="status" hidden></p>
+
+        <label class="lembrar termos">
+          <input id="termos" type="checkbox" /> Li e aceito os termos de uso
+        </label>
+
+        <button type="submit" class="btn btn-principal">Criar conta</button>
+
+        <p class="troca">Já tem conta? <a href="index.html">Entrar</a></p>
+      </form>
+    </section>
+
+    <section class="painel-ilustracao" aria-hidden="true"></section>
+  </main>
+
+  <script>
+    const form = document.getElementById('form-cadastro');
+    const campos = {
+      nome: document.getElementById('nome'),
+      email: document.getElementById('email'),
+      usuario: document.getElementById('usuario'),
+      senha: document.getElementById('senha'),
+      confirmar: document.getElementById('confirmar'),
+      termos: document.getElementById('termos'),
+    };
+    const erro = document.getElementById('erro');
+    const sucesso = document.getElementById('sucesso');
+    const toggle = document.querySelector('.toggle');
+    const botao = form.querySelector('.btn-principal');
+
+    toggle.addEventListener('click', () => {
+      const mostrando = campos.senha.type === 'text';
+      campos.senha.type = mostrando ? 'password' : 'text';
+      campos.confirmar.type = campos.senha.type;
+      toggle.textContent = mostrando ? 'Mostrar' : 'Ocultar';
+      toggle.setAttribute('aria-pressed', String(!mostrando));
+    });
+
+    function mostrarErro(msg, campo) {
+      sucesso.hidden = true;
+      erro.textContent = msg;
+      erro.hidden = false;
+      campo?.focus();
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      erro.hidden = true;
+      sucesso.hidden = true;
+
+      const { nome, email, usuario, senha, confirmar, termos } = campos;
+
+      if (!nome.value.trim()) return mostrarErro('Informe seu nome completo.', nome);
+      if (!/^\S+@\S+\.\S+$/.test(email.value)) return mostrarErro('Informe um e-mail válido.', email);
+      if (usuario.value.trim().length < 3) return mostrarErro('O usuário precisa ter ao menos 3 caracteres.', usuario);
+      if (senha.value.length < 6) return mostrarErro('A senha precisa ter ao menos 6 caracteres.', senha);
+      if (senha.value !== confirmar.value) return mostrarErro('As senhas não coincidem.', confirmar);
+      if (!termos.checked) return mostrarErro('Aceite os termos para continuar.', termos);
+
+      botao.disabled = true;
+      botao.textContent = 'Criando...';
+      // TODO: enviar os dados para sua API aqui
+      await new Promise((r) => setTimeout(r, 1000));
+      botao.disabled = false;
+      botao.textContent = 'Criar conta';
+
+      sucesso.textContent = 'Conta criada! Redirecionando para o login...';
+      sucesso.hidden = false;
+      setTimeout(() => (window.location.href = 'index.html'), 1500);
+    });
+  </script>
+</body>
+</html>
