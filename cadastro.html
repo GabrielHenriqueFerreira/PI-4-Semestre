@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cadastro | Paraflow</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="transicao.js"></script>
 </head>
 <body>
   <main class="card invertido">
@@ -98,7 +99,7 @@
 
         <button type="submit" class="btn btn-principal">Criar conta</button>
 
-        <p class="troca">Já tem conta? <a href="index.html">Entrar</a></p>
+        <p class="troca">Já tem conta? <a href="index.html" data-transicao="voltar">Entrar</a></p>
       </form>
     </section>
 
@@ -234,7 +235,7 @@
         botao.textContent = 'Conta criada ✓';
         sucesso.textContent = 'Conta criada! Redirecionando para o login...';
         sucesso.hidden = false;
-        setTimeout(() => (window.location.href = 'index.html'), 1500);
+        setTimeout(() => navegarCom('index.html', 'voltar'), 1500);
       } catch (err) {
         erro.textContent = 'Não foi possível criar a conta. Tente novamente.';
         erro.hidden = false;
